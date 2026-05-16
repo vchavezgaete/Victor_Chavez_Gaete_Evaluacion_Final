@@ -1,0 +1,48 @@
+pipeline {
+    agent any
+
+    options {
+        timestamps()
+        timeout(time: 45, unit: 'MINUTES')
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                sh 'mvn -B -ntp clean package -DskipTests'
+            }
+        }
+
+        stage('Unit Tests') {
+            steps {
+                sh 'mvn -B -ntp test'
+            }
+        }
+
+        stage('Integration and Acceptance Tests') {
+            steps {
+                sh 'mvn -B -ntp verify'
+            }
+            post {
+                always {
+                    junit testResults: 'target/failsafe-reports/*.xml', allowEmptyResults: true
+                }
+            }
+        }
+
+        stage('Deploy to Test') {
+            steps {
+                sh 'chmod +x deploy.sh && ./deploy.sh'
+            }
+        }
+    }
+
+    post {
+        failure {
+            sh 'chmod +x rollback.sh && ./rollback.sh || true'
+        }
+        success {
+            echo 'Pipeline de despliegue completado'
+        }
+    }
+}

@@ -3,58 +3,151 @@
 **Autor:** Victor Chávez Gaete  
 **Repositorio:** https://github.com/vchavezgaete/Victor_Chavez_Gaete_Evaluacion_Final
 
-Proyecto Maven (Java 17) con gestión de pedidos, pruebas automatizadas en tres niveles y pipelines de integración continua y despliegue.
+---
 
-## Descripción
+## Descripción del proyecto
 
-El sistema modela pedidos con líneas de detalle, valida reglas comerciales (`ValidacionPedidoService`), calcula subtotal, IVA y total (`CalculadoraPedidoService`) y expone el flujo completo en `PedidoService`. La clase `App` ejecuta un ejemplo por consola.
+Aplicación Java (Maven) que gestiona **pedidos comerciales**: validación de reglas (`ValidacionPedidoService`), cálculo de subtotal, IVA y total (`CalculadoraPedidoService`) y procesamiento del flujo en `PedidoService`. Incluye automatización de pruebas, integración continua (Jenkins) y documentación de despliegue con rollback.
 
-## Versionado (GitFlow)
+---
 
-| Rama | Uso |
-|------|-----|
-| `main` | Versión estable |
-| `develop` | Integración de cambios |
-| `feature/configuracion-maven` | Configuración Maven y dependencias |
+## Actividad 1 — Git y Maven
+
+### GitFlow
+
+| Rama | Propósito |
+|------|-----------|
+| `main` | Código estable |
+| `develop` | Integración de desarrollo |
+| `feature/configuracion-maven` | Configuración `pom.xml` y plugins |
 | `feature/pruebas-unitarias` | Pruebas Surefire |
-| `feature/pruebas-integracion` | Pruebas Failsafe de integración |
-| `release/examen-final` | Entrega del examen |
+| `feature/pruebas-integracion` | Pruebas Failsafe IT |
+| `release/examen-final` | Versión de entrega |
 
-## Stack
+### Dependencias de pruebas (`pom.xml`)
 
-- Java 17, Maven, JUnit 5, Selenium (dependencia de pruebas)
-- Jenkins (pipeline declarativo)
-- Git / GitHub
+- **JUnit 5** — pruebas unitarias, integración y aceptación  
+- **Selenium** — automatización UI (dependencia declarada para pruebas web futuras)  
+- **Maven Surefire** — ejecución de tests unitarios  
+- **Maven Failsafe** — ejecución de tests IT y acceptance  
 
-## Pruebas
+---
 
-| Tipo | Paquete | Comando |
-|------|---------|---------|
-| Unitarias | `unit` | `mvn test` |
-| Integración | `integration` (`*IT.java`) | `mvn verify` |
-| Aceptación | `acceptance` (`*AcceptanceTest.java`) | `mvn verify` |
+## Estrategia de pruebas
 
-Surefire ejecuta solo las unitarias; Failsafe ejecuta integración y aceptación.
+| Capa | Paquete | Patrón de clase | Herramienta | Objetivo |
+|------|---------|-----------------|-------------|----------|
+| Unitarias | `unit` | `*Test.java` | Surefire | Lógica aislada (validación, cálculos) |
+| Integración | `integration` | `*IT.java` | Failsafe | Interacción entre servicios |
+| Aceptación | `acceptance` | `*AcceptanceTest.java` | Failsafe | Reglas de negocio end-to-end |
 
-## Ejecución local
+**Pirámide:** muchas pruebas rápidas en `unit`, menos en `integration` y escenarios de negocio en `acceptance`.
+
+---
+
+## Cómo ejecutar pruebas y pipelines
+
+### Pruebas locales
 
 ```bash
-mvn clean compile
-mvn test
-mvn verify
-mvn -q compile exec:java
+mvn clean compile    # compilación
+mvn test             # solo unitarias (Surefire)
+mvn verify           # unitarias + integración + aceptación (Failsafe)
+mvn -q compile exec:java   # ejemplo consola (App)
 ```
 
-## CI (`Jenkinsfile`)
+### Pipeline CI (`Jenkinsfile`)
 
-Etapas: Checkout → Build (`mvn compile`) → Unit Tests → Integration Tests (`mvn verify`) → publicación de artefactos y reportes JUnit.
+1. Crear job **Pipeline** en Jenkins.  
+2. SCM: Git → `https://github.com/vchavezgaete/Victor_Chavez_Gaete_Evaluacion_Final.git`, rama `main`.  
+3. Script Path: `Jenkinsfile`.  
+4. Ejecutar **Build Now**.
 
-Configurar un job Pipeline apuntando a este repositorio, rama `main`, script `Jenkinsfile`. El agente debe tener Maven y JDK; los pasos usan shell Linux (`sh`).
+**Etapas:** Checkout → Build → Unit Tests → Integration Tests (`verify`) → Publish Results.
 
-## Despliegue
+### Pipeline CD (`Jenkinsfile.deploy`)
 
-Ver `deployment-pipeline.md` para el flujo build → pruebas → despliegue en ambiente de prueba → rollback. El script `rollback.sh` simula la reversión a la versión anterior.
+Script Path: `Jenkinsfile.deploy`  
+**Etapas:** Build → Unit Tests → Integration Tests → Acceptance Tests → Deploy to Test (`deploy.sh`). En fallo se invoca `rollback.sh`.
 
-## Evidencias
+### Despliegue manual
 
-Las capturas del informe se almacenan en `evidencias/actividad-1`, `actividad-2` y `actividad-3`.
+```bash
+chmod +x deploy.sh rollback.sh
+./deploy.sh      # build + pruebas + deploy simulado
+./rollback.sh    # rollback simulado
+```
+
+Detalle en `deployment-pipeline.md`.
+
+---
+
+## Actividad 2 — Evidencias CI
+
+| Archivo | Descripción |
+|---------|-------------|
+| `Jenkinsfile` | Pipeline versionado en GitHub |
+| `evidencias/actividad-2/02-pipeline-exitoso.png` | Captura Jenkins (Stage View SUCCESS) |
+| `evidencias/actividad-2/01-jenkinsfile-github.png` | Captura del Jenkinsfile en GitHub |
+| `evidencias/actividad-2/mvn-ci.log` | Log de referencia `mvn verify` |
+
+![Jenkinsfile en GitHub](evidencias/actividad-2/01-jenkinsfile-github.png)
+
+![Pipeline Jenkins exitoso](evidencias/actividad-2/02-pipeline-exitoso.png)
+
+---
+
+## Actividad 3 — Evidencias despliegue
+
+| Archivo | Descripción |
+|---------|-------------|
+| `deployment-pipeline.md` | Documento del pipeline CD |
+| `deploy.sh` / `rollback.sh` | Scripts de despliegue y rollback |
+| `evidencias/actividad-3/01-deployment-pipeline-md.png` | Captura del documento |
+| `evidencias/actividad-3/03-ejecucion-rollback.png` | Captura ejecución rollback |
+| `evidencias/actividad-3/deploy.log` | Log de `./deploy.sh` |
+| `evidencias/actividad-3/rollback.log` | Log de `./rollback.sh` |
+
+![Pipeline de despliegue](evidencias/actividad-3/01-deployment-pipeline-md.png)
+
+![Ejecución rollback](evidencias/actividad-3/03-ejecucion-rollback.png)
+
+---
+
+## Actividad 1 — Evidencias Git y Maven
+
+![Repositorio GitHub](evidencias/actividad-1/01-repositorio-github.png)
+
+![Ramas GitFlow](evidencias/actividad-1/02-ramas-gitflow.png)
+
+![Configuración pom.xml](evidencias/actividad-1/03-pom-xml.png)
+
+![mvn test](evidencias/actividad-1/04-mvn-test.png)
+
+![mvn verify](evidencias/actividad-1/05-mvn-verify.png)
+
+Logs de respaldo: `evidencias/actividad-1/mvn-test.log`, `mvn-verify.log`.
+
+---
+
+## Estructura del repositorio
+
+```
+├── pom.xml
+├── Jenkinsfile
+├── Jenkinsfile.deploy
+├── deployment-pipeline.md
+├── deploy.sh
+├── rollback.sh
+├── src/main/java/...      # código producción
+├── src/test/java/.../unit/
+├── src/test/java/.../integration/
+├── src/test/java/.../acceptance/
+└── evidencias/            # capturas y logs
+```
+
+---
+
+## Tecnologías
+
+Java 17 · Maven · JUnit 5 · Selenium · Jenkins · Git · GitHub

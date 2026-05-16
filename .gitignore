@@ -25,6 +25,7 @@ buildNumber.properties
 .DS_Store
 Thumbs.db
 
-# Logs y reportes locales opcionales
+# Logs locales (excepto evidencias del examen)
 *.log
+!evidencias/**/*.log
 hs_err_pid*

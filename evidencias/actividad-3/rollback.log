@@ -1,0 +1,5 @@
+﻿[1/5] Detener version desplegada
+[2/5] Restaurar artefacto anterior (pedido-api-previous.jar)
+[3/5] Reiniciar servicio en staging
+[4/5] Verificar healthcheck
+[5/5] Rollback completado - version anterior activa

@@ -1,0 +1,46 @@
+﻿[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------< cl.iplacex.automatizacion:examen-automatizacion-pruebas >-------
+[INFO] Building Examen Automatizaci├│n de Pruebas 1.0.0-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:2.5:clean (default-clean) @ examen-automatizacion-pruebas ---
+[INFO] Deleting C:\IPLACEX\AUTOMATIZACI├ôN DE PRUEBAS\Victor_Chavez_Gaete_Evaluacion_Final\target
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ examen-automatizacion-pruebas ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory C:\IPLACEX\AUTOMATIZACI├ôN DE PRUEBAS\Victor_Chavez_Gaete_Evaluacion_Final\src\main\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.13.0:compile (default-compile) @ examen-automatizacion-pruebas ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 6 source files with javac [debug release 17] to target\classes
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ examen-automatizacion-pruebas ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory C:\IPLACEX\AUTOMATIZACI├ôN DE PRUEBAS\Victor_Chavez_Gaete_Evaluacion_Final\src\test\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.13.0:testCompile (default-testCompile) @ examen-automatizacion-pruebas ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 6 source files with javac [debug release 17] to target\test-classes
+[INFO] 
+[INFO] --- maven-surefire-plugin:3.2.5:test (default-test) @ examen-automatizacion-pruebas ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running cl.iplacex.automatizacion.unit.CalculadoraPedidoServiceTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.044 s -- in cl.iplacex.automatizacion.unit.CalculadoraPedidoServiceTest
+[INFO] Running cl.iplacex.automatizacion.unit.ValidacionPedidoServiceTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 s -- in cl.iplacex.automatizacion.unit.ValidacionPedidoServiceTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.723 s
+[INFO] Finished at: 2026-05-16T16:49:27-04:00
+[INFO] ------------------------------------------------------------------------

@@ -1,45 +1,64 @@
-# Pipeline de despliegue
+# Pipeline de despliegue (CD)
 
-Flujo de entrega del artefacto Maven (`target/*.jar`) hacia un ambiente de prueba, con validación previa y rollback.
+Documento del flujo de entrega hacia el ambiente de prueba (staging/QA), alineado con las pruebas automatizadas del proyecto.
 
-## Etapas
+## Diagrama de etapas
 
-### 1. Build
-
-Compilación y empaquetado con JDK 17.
-
-```bash
-mvn clean package
+```
+Build → Unit Tests → Integration Tests → Acceptance Tests → Deploy (test) → [Rollback si falla]
 ```
 
-### 2. Pruebas unitarias
+## 1. Build
 
-Validación de componentes aislados (Surefire, paquete `unit`).
+Genera el JAR ejecutable.
+
+```bash
+mvn clean package -DskipTests
+```
+
+## 2. Pruebas unitarias
+
+Componentes aislados (`src/test/java/.../unit/`, Maven Surefire).
 
 ```bash
 mvn test
 ```
 
-### 3. Pruebas de integración
+## 3. Pruebas de integración
 
-Validación de interacción entre servicios (`*IT.java`, Failsafe).
+Interacción entre servicios (`*IT.java`, Maven Failsafe).
 
-### 4. Pruebas de aceptación
+## 4. Pruebas de aceptación
 
-Escenarios de negocio (`*AcceptanceTest.java`, Failsafe).
+Criterios de negocio (`*AcceptanceTest.java`, Maven Failsafe).
 
 ```bash
 mvn verify
 ```
 
-### 5. Deploy (ambiente de prueba)
+## 5. Despliegue en ambiente de prueba
 
-Despliegue del JAR en staging/QA: copia del artefacto, reinicio del servicio y smoke tests.
+Instalación del artefacto en staging. Script: `deploy.sh`.
 
-### 6. Rollback
+Actividades: copia del JAR, reinicio del servicio, smoke test HTTP.
 
-Ante fallas post-despliegue, retorno a la versión estable. Ver `rollback.sh`.
+## 6. Rollback
 
-## Relación con CI
+Ante errores post-despliegue se revierte a la versión estable anterior. Script: `rollback.sh`.
 
-El `Jenkinsfile` cubre build y pruebas en el agente de CI. Las etapas 5 y 6 se ejecutan en el entorno de destino con credenciales e infraestructura propias del ambiente.
+**Estrategia elegida:** rollback automático (alternativa válida: Blue-Green o Canary en infraestructura con balanceador).
+
+## Automatización Jenkins
+
+| Archivo | Uso |
+|---------|-----|
+| `Jenkinsfile` | CI: build + pruebas |
+| `Jenkinsfile.deploy` | CD: build + pruebas + despliegue + rollback en fallo |
+
+## Ejecución manual
+
+```bash
+chmod +x deploy.sh rollback.sh
+./deploy.sh
+./rollback.sh
+```
